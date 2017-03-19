@@ -1,16 +1,15 @@
+# send with command  "ascii-xfr -svn -l 500"
+# 500ms between lines seem to secure correct data upload
+
 BEGIN {
-    FS=",";
-    ct=0
-    chunk=0
-    header=0
+    FS = ",";
+    ct = 0
+    chunk = 0
+    printf(":\n")
 }
 
-(/^[ \t]*$/) { next; }
-(/^[ \t]*#/) { next; }
-
-function dohead() {
-    printf(":\n:a%1x%1x",chan,chunk);
-    header=1;
+function printCmdDefineChunk() {
+    printf(":a%1x%1x",chan,chunk);
 }
 
 function raiseError() {
@@ -18,27 +17,34 @@ function raiseError() {
     exit(1);
 }
 
-(header == 0) {
-    dohead();
+
+# ignore anything which is not a number
+($0 !~ /^[0-9]+$/) { next; }
+
+(chunk >= 16) { raiseError(); }
+
+(ct == 0) {
+    printCmdDefineChunk();
 }
+
+(ct != 0) { printf(","); }
 
 {
     gsub("\"","");
     gsub("[ \t\r\n]","");
-    for (i=1; i<=NF; i++)  {
-        if (ct==64) {
-            print ""
-            ct=0;
-            chunk++;
-            if (chunk==16) { raiseError(); }
-            dohead();
-        }
-        else {
-            if (ct!=0) { printf(","); }
-            ct++;
-            printf("%d",$i);
-        }
-    }
+
+    printf("%d,%d",$i*16,$i*16);  # times 2 because buffer seems to be 2048
+    ct = ct + 1;
 }
 
-END { print "" }
+(ct == 64) {
+    ct = 0;
+    print ""
+    chunk = chunk + 1
+}
+
+END { # print ending commands
+    print ":s1f0000000100";  # set 1Hz
+    print ":r1f";      # read back freq
+    print ":s1w34"     # select arbitrary waveform 2
+}
