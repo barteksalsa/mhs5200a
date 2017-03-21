@@ -32,11 +32,11 @@ function raiseError() {
     gsub("\"","");
     gsub("[ \t\r\n]","");
 
-    printf("%d,%d",$i*16,$i*16);  # times 2 because buffer seems to be 2048
+    printf("%d",$i);  # times 2 because buffer seems to be 2048
     ct = ct + 1;
 }
 
-(ct == 64) {
+(ct == 128) {
     ct = 0;
     print ""
     chunk = chunk + 1
