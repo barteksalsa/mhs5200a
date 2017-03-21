@@ -2,7 +2,6 @@
 # 500ms between lines seem to secure correct data upload
 
 BEGIN {
-    FS = ",";
     ct = 0
     chunk = 0
     printf(":\n")
@@ -44,7 +43,7 @@ function raiseError() {
 }
 
 END { # print ending commands
-    print ":s1f0000000100";  # set 1Hz
-    print ":r1f";      # read back freq
-    print ":s1w34"     # select arbitrary waveform 2
+    print ":s1f0000000100";      # set 1Hz
+    print ":r1f";                # read back freq
+    print ":s1w" (32+chan)       # select arbitrary waveform chan
 }
