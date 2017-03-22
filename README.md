@@ -1,11 +1,11 @@
 About setwave5200
 =================
 
-*This is an early, but working, work in progress.*
+**This is an early, but working, work in progress.**
 
-The repository itself is forked from https://github.com/wd5gnr/mhs5200a. That repository provides a lot of useful information. Please visit it first.
+The repository itself is forked from [link](https://github.com/wd5gnr/mhs5200a). That repository provides a lot of useful information. Please visit it first.
 
-h1. Motivation
+# Motivation
 
 Scripts in the original repository have constraints:
 
@@ -21,7 +21,7 @@ They simply do not work with my hardware which seems to have:
 
 These are conclusions from my reverse-engineering efforts.
 
-h1. Constraints
+# Constraints
 
 The scripts should work under any OS that has:
 
@@ -29,7 +29,7 @@ The scripts should work under any OS that has:
 * python 2.7
 * minicom or any equivalent software for uploading files over UART
 
-h1. Workflow
+# Workflow
 
 The typical workflow is the following:
 
