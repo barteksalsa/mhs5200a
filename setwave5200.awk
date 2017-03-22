@@ -1,10 +1,12 @@
+# use with awk:
+#              cat wave.csv | awk -f "setwave5200.awk"
 # send with command  "ascii-xfr -svn -l 500"
 # 500ms between lines seem to secure correct data upload
 
 BEGIN {
     ct = 0
     chunk = 0
-    printf(":\n")
+    printf(":\n")   # to finish any ongoing command
 }
 
 function printCmdDefineChunk() {
@@ -16,26 +18,33 @@ function raiseError() {
     exit(1);
 }
 
+#
+#  FOR EACH CSV LINE
+#
 
 # ignore anything which is not a number
 ($0 !~ /^[0-9]+$/) { next; }
 
+# maximum number of chunks is 16 by the protocol design. (0xf)
 (chunk >= 16) { raiseError(); }
 
+# when first number is read in a chunk, command should be printed 
 (ct == 0) {
     printCmdDefineChunk();
 }
 
+# when not first, continue with inserted ","
 (ct != 0) { printf(","); }
 
 {
     gsub("\"","");
     gsub("[ \t\r\n]","");
 
-    printf("%d",$i);  # times 2 because buffer seems to be 2048
+    printf("%d",$i);
     ct = ct + 1;
 }
 
+# in one chunk there is 128 values. End the line and start a new chunk
 (ct == 128) {
     ct = 0;
     print ""
