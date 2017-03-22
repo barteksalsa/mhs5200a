@@ -1,0 +1,20 @@
+Script converts given text to UART pattern.
+
+Usage:
+1. update text in the script and select if this is for UART or TTL
+   vi make-str-as-wave.py
+   
+1. generate wave
+   python make-str-as-wave.py > newwave.csv
+
+2. convert the wave into generator commands:
+   cat newwave.wav | gawk -f "../setwave5200.awk" -v chan=3 >~/wav1.asc
+
+3. upload the wave using for example minicom:
+   minicom -D /dev/tty.wcxxxx
+   setup serial:   57600 8N1  no flow control
+   setup transfer for ASCII:   ascii-xfr -svn -l 500
+   (500ms between lines seem to work ok. Smaller values like 100-200 caused
+    programming errors)
+    
+    
